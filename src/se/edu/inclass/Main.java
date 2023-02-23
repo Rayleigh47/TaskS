@@ -7,6 +7,8 @@ import se.edu.inclass.task.TaskNameComparator;
 
 import java.util.ArrayList;
 
+import static java.util.stream.Collectors.toList;
+
 public class Main {
 
     private TaskNameComparator taskNameComparator;
@@ -19,8 +21,15 @@ public class Main {
 
         System.out.println();
         System.out.println("Printing deadlines");
+
+        printDeadlinesUsingStream(tasksData);
+
+        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
+
+        ArrayList<Task> FilteredList = filterTaskListUsingStreams(tasksData, "11");
+        printData(FilteredList);
 //        printDeadlines(tasksData);
-        printDeadlinesUsingStreams(tasksData);
+        printDeadlinesUsingStream(tasksData);
 
 //        System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
         System.out.println("Total number of deadlines using stream: " + countDeadlinesUsingStreams(tasksData));
@@ -48,13 +57,26 @@ public class Main {
         for (Task t : tasksData) {
             System.out.println(t);
         }
-        ;
     }
     public static void printDataUsingStreams(ArrayList<Task> tasks) {
         System.out.println("printing data using streams: ");
         tasks.stream()
                 .forEach(System.out::println);
     }
+    public static void printDeadlinesUsingStream(ArrayList<Task> tasks) {
+        tasks.stream()
+                .filter(t -> t instanceof Deadline)
+                .sorted((a, b) -> a.getDescription().compareToIgnoreCase(b.getDescription()))
+                .forEach(System.out::println);
+    }
+    public static ArrayList<Task> filterTaskListUsingStreams(ArrayList<Task> tasks, String filterString) {
+        ArrayList<Task> filteredList = (ArrayList<Task>) tasks.stream()
+                .filter(t -> t.getDescription().contains(filterString))
+                .collect(toList());
+
+        return filteredList;
+    }
+
     public static void printDeadlines(ArrayList<Task> tasksData) {
         System.out.println("printing deadlines using iteration: ");
         for (Task t : tasksData) {
